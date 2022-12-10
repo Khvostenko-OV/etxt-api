@@ -1,5 +1,5 @@
 """
-    To use API on etxt.biz you have to:
+    To use API on etxt.biz you need:
         sign up at https://etxt.biz/users/register/
         go to account/settings
         checkbox 'Work with this profile by API'
@@ -7,85 +7,32 @@
         define API password (api_pass)
         press 'Save'
 
-    Use call_api() for calling API-function
-        Required parameters:
-            method - name of called method (See specification at https://www.etxt.biz/api/)
-            token - API key of current user
-            api_pass - API password of current user
-        Auxiliary parameters for certain method (See specification at https://www.etxt.biz/api/)
+    Create ApiClient object with your token and api_pass.
 
-    call_api returns json of http-response or error message in json format - {'error': 'error message'}
+    Use ApiClient.call_api(method, **params) for calling API-function
+        method - name of called method (required parameter)
+        params - dictionary of auxiliary parameters for certain method (see https://www.etxt.biz/api/)
 
+    Note: if required transfer array of ids to the API-function use array=[id1, ...] parameter
+
+    ApiClient.call_api returns json of http-response or error message in format - {'error': 'error message'}
+
+    More implemented ApiClient methods:
+        article_list(**params) - returns the list of articles offered for sale
+        article_buy(article_id) - performs purchase of indicated article by current user
+        article_get(article_ids) - returns texts of the requested purchased articles
+        category_list() - returns the list of subject categories of orders/articles, sorted by category name
+        order_list(**params) - returns the list of orders of current user
+        order_create(**params) - creating an order
+        order_update(order_id, **params) - updating indicated order
+        order_delete(order_ids) - deletion of orders that have status of waiting for author or from drafts
+        user_get(id, login) - returns detailed information of indicated user
+        user_balance() - returns balance of current user
+        query_params(method, **aux_params) - creates string with query parameters:
+                                                required - method, token, sign
+                                                auxiliary - aux_params
+
+    More information about implemented API methods look at https://www.etxt.biz/api/
 """
 
-import requests
-from hashlib import md5
-
-ETXT_BASE_URL = "https://www.etxt.ru/api/json/"
-POST_METHODS = [
-    "aricles.buy",
-    "bwgroups.saveGroup",
-    "bwgroups.deleteGroup",
-    "bwgroups.updateGroup",
-    "correction.add",
-    "correction.import",
-    "folders.addFolder",
-    "folders.moveToFolder",
-    "messages.setRead",
-    "messages.setDelete",
-    "messages.writePrivate",
-    "tasks.setClientComment",
-    "tasks.setNote",
-    "tasks.unsetNote",
-    "tasks.paidTask",
-    "tasks.cancelTask",
-    "tasks.deleteTask",
-    "tasks.extraPaid",
-    "tasks.saveTask",
-    "tasks.failTask",
-    "tasks.copyTask",
-    "tasks.setDeadline",
-    "tasks.saveComment",
-    "tasks.sendNoteFail",
-    "users.setNote",
-    "users.setReport",
-    "users.setUserBW",
-]
-
-
-def query_params(method: str, token: str, api_pass: str, **aux_params) -> str:
-    """
-     Create string with query parameters: required - method, token, sign and auxiliary - aux_params
-    """
-
-    param_list = ["method=" + method, "token=" + token]
-    param_list += [key + "=" + str(val) for key, val in aux_params.items()]
-    param_list.sort()
-    params = ""
-    for i in param_list:
-        params += i
-    a_p = api_pass + "api-pass"
-    params += md5(a_p.encode()).hexdigest()
-    param_list.append("sign=" + md5(params.encode()).hexdigest())
-    return "&".join(param_list)
-
-
-def call_api(method: str, token: str, api_pass: str, **aux_params):
-    """
-     Call etxt.biz API-function named method with aux_params. Return json response
-    """
-
-    if method in POST_METHODS:
-        params = query_params(method=method, token=token, api_pass=api_pass)
-        resp = requests.post(url=ETXT_BASE_URL, params=params, data=aux_params)
-    else:
-        params = query_params(method=method, token=token, api_pass=api_pass, **aux_params)
-        resp = requests.get(url=ETXT_BASE_URL, params=params)
-    if resp.status_code == 200:
-        try:
-            json = resp.json()
-        except:
-            json = {"error": resp.text}
-        return json
-    else:
-        return {"error": f"Server error - {resp.status_code}"}
+from .core import ApiClient
