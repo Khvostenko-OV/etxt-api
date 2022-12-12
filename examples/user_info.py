@@ -11,7 +11,7 @@ if __name__ == "__main__":
 
     # Current user information
     bal = api.user_balance()
-    user = api.user_get(id=bal["id"])
+    user = api.user_get(bal["id"])
     pprint(user)
     print("Money balance:", bal["balance"])
 

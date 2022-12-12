@@ -12,14 +12,14 @@ To use API on etxt.biz you need:
 
 Create ApiClient object with your *token* and *api_pass*.
 
-Use **ApiClient.call_api(*method*, *params*)** for calling API-function
+Use **ApiClient._request(*method*, *params*)** for calling API-function
 * *method* - name of called method (required parameter)
 * *params* - dictionary of auxiliary parameters for certain method (see https://www.etxt.biz/api/)
 
 **Note:** if required transfer array of ids to the API-function use array=[id1, ...] parameter
 
 
-**ApiClient.call_api** makes GET/POST http-request (depends on *method*) by defining signature of request (*sign*), 
+**ApiClient._request** makes POST http-request by defining signature (*sign*), 
 transfering *method*, *token*, *sign* and *params* to http-request.
 Returns json of http-response or error message in json format - {'error': 'error message'}
 

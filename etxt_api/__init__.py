@@ -9,13 +9,13 @@
 
     Create ApiClient object with your token and api_pass.
 
-    Use ApiClient.call_api(method, **params) for calling API-function
+    Use ApiClient._request(method, **params) for calling API-function
         method - name of called method (required parameter)
         params - dictionary of auxiliary parameters for certain method (see https://www.etxt.biz/api/)
 
     Note: if required transfer array of ids to the API-function use array=[id1, ...] parameter
 
-    ApiClient.call_api returns json of http-response or error message in format - {'error': 'error message'}
+    ApiClient._request returns json of http-response or error message in format - {'error': 'error message'}
 
     More implemented ApiClient methods:
         article_list(**params) - returns the list of articles offered for sale

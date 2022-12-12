@@ -8,6 +8,7 @@ API_PASS = config("API_PASS", "my_api_pass")
 if __name__ == "__main__":
 
     api = ApiClient(TOKEN, API_PASS)
+
     # Show 5 existing articles
     pprint(api.article_list(count=5))
     print()

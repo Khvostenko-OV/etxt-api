@@ -21,4 +21,4 @@ if __name__ == "__main__":
     num = input("Input order id to delete: ")
     if num:
         print()
-        print("Deleted order: ", api.order_delete(num))
+        print("Deleted order: ", api.order_delete([num]))

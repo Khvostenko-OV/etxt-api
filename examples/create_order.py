@@ -32,4 +32,4 @@ if __name__ == "__main__":
     if not "error" in resp:
         if input(f"Delete order {resp['id_task']} (y/n)? ").lower() in ["y", "д"]:
             print()
-            print("Deleted order: ", api.order_delete(resp["id_task"]))
+            print("Deleted order: ", api.order_delete([resp["id_task"]]))

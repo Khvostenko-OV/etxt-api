@@ -2,5 +2,7 @@ venv/
 .idea/
 __pycache__/
 static/
+build/
+*.egg-info/
 .env
 
